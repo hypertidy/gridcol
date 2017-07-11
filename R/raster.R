@@ -27,8 +27,12 @@ raster.gridcol <- function(x, ...) {
 setMethod("raster", "gridcol", raster.gridcol)
 #' @name xyFromCell
 #' @export
+#' @examples
+#' y <- gridcol(1, raster(volcano))
+#' plot(raster(volcano))
+#' x <- gridcol(1:12, setExtent(raster(matrix(1:12, 3)), extent(0.4, 0.7, 0.2, 0.6)))
 grid_map <- function(x, y) {
- cellFromXY.gridcol(raster(y), xyFromCell.gridcol(x))
+ cellFromXY.gridcol(y, xyFromCell.gridcol(x))
 }
 cellFromXY.gridcol <- function(x, ...) {
   cellFromXY(raster(x), x)
