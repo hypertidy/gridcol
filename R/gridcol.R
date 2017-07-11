@@ -7,27 +7,43 @@
 #' @export
 #'
 #' @examples
+#' library(raster)
+#' grid_spec(raster(volcano))
+#' grid_spec(grid_spec(raster(volcano)))
+#' grid_spec(grid_spec(volcano))
+#' gridcol(1, raster(volcano))
 grid_spec <- function(x, ...) {
   UseMethod("grid_spec")
 }
 #' @name grid_spec
 #' @export
 grid_spec.default <- function(x, ...) {
-  grid_spec(raster::raster(x), ...)
+  ras <- raster::raster(x)
+  if (identical(raster::extent(ras), raster::extent(raster::raster(matrix(1))))) {
+    ras <- raster::setExtent(ras, raster::extent(0, ncol(ras), 0, nrow(ras)))
+  }
+  grid_spec(ras, ...)
 }
 #' @name grid_spec
 #' @export
 grid_spec.BasicRaster <- function(x, ...) {
-  tibble::tibble(xmin = raster::xmin(x), xmax  = raster::xmax(x),
+  out <- tibble::tibble(xmin = raster::xmin(x), xmax  = raster::xmax(x),
                  ymin = raster::ymin(x), ymax = raster::ymax(x),
                  nrow = raster::nrow(x), ncol = raster::ncol(x),
                  crs = raster::projection(x))
+  structure(out, class = c("gridspec", class(out)))
 }
 #' @name grid_spec
 #' @export
 grid_spec.gridcol <- function(x, ...) {
   attr(x, "grid_spec")
 }
+#' @name grid_spec
+#' @export
+grid_spec.gridspec <- function(x, ...) {
+  x
+}
+
 #' Title
 #'
 #' @param x
@@ -38,6 +54,10 @@ grid_spec.gridcol <- function(x, ...) {
 #' @export
 #'
 #' @examples
+#' library(raster)
+#' gridcol(1, raster(volcano))
+#' gridcol(1, volcano)
+#' gridcol(seq_len(prod(dim(volcano))), volcano)
 gridcol <- function(x, grid,  ...) {
   UseMethod("gridcol")
 }
@@ -53,6 +73,7 @@ gridcol.numeric <- function(x, grid, ...) {
 #' @name gridcol
 #' @export
 gridcol.integer <- function(x, grid, ...) {
+
   gs <- grid_spec(grid)
   if (any(x < 1)) warning("cell values less than 1")
   if (any(x > prod(gs$nrow * gs$ncol))) warning("cell value greater than length of grid")

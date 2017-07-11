@@ -20,3 +20,9 @@ gridcol(x, grid, ...)
 \description{
 Title
 }
+\examples{
+library(raster)
+gridcol(1, raster(volcano))
+gridcol(1, volcano)
+gridcol(seq_len(prod(dim(volcano))), volcano)
+}

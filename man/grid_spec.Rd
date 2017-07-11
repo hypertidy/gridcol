@@ -8,6 +8,8 @@
 \alias{grid_spec.BasicRaster}
 \alias{grid_spec}
 \alias{grid_spec.gridcol}
+\alias{grid_spec}
+\alias{grid_spec.gridspec}
 \title{Title}
 \usage{
 grid_spec(x, ...)
@@ -17,10 +19,19 @@ grid_spec(x, ...)
 \method{grid_spec}{BasicRaster}(x, ...)
 
 \method{grid_spec}{gridcol}(x, ...)
+
+\method{grid_spec}{gridspec}(x, ...)
 }
 \arguments{
 \item{...}{}
 }
 \description{
 Title
+}
+\examples{
+library(raster)
+grid_spec(raster(volcano))
+grid_spec(grid_spec(raster(volcano)))
+grid_spec(grid_spec(volcano))
+gridcol(1, raster(volcano))
 }
