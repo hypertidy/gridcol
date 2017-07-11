@@ -1,3 +1,5 @@
+setOldClass("gridspec")
+setOldClass("gridcol")
 #' raster methods
 #'
 #' @param x
@@ -5,12 +7,12 @@
 #'
 #' @return
 #' @export
-#'
+#' @importFrom raster raster
 #' @examples
 raster.gridspec <- function(x, ...) {
   do.call(raster, dplyr::rename(x, xmn = xmin, xmx = xmax, ymn = ymin, ymx = ymax, nrows = nrow, ncols = ncol))
 }
-setMethod("raster", "gridspec", raster.gridspec)
+setMethod(raster::raster, "gridspec", raster.gridspec)
 
 #' raster methods
 #'
@@ -24,7 +26,7 @@ setMethod("raster", "gridspec", raster.gridspec)
 raster.gridcol <- function(x, ...) {
   raster(grid_spec(x))
 }
-setMethod("raster", "gridcol", raster.gridcol)
+setMethod(raster::raster, "gridcol", raster.gridcol)
 #' @name xyFromCell
 #' @export
 #' @examples

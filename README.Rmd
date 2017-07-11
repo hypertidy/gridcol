@@ -1,0 +1,99 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# gridcol
+
+The goal of gridcol is to store *the abstraction of* a raster directly with an atomic
+vector in R. 
+
+
+
+# Whaat
+
+I'm constantly following this kind of pattern: 
+
+```R
+dummy <- setValues(raster(<something or other>), NA)
+
+xydata <- <points-or-lines-or-polygons-or...>
+
+cells <- tibble(cell = cellFromXY(dummy, xydata))
+
+## now, scan the entire history of remote sensing data
+extract(raster(file_i), cells$cell)
+
+```
+
+I literally do this every day. Today I dug up some oldish code that makes a 
+huuge grid, then a local window out of that, and then a third raster that was to contain an aggregation of finer pixels within it. 
+
+```R
+huge_grid <- raster(extent(-180, 180, -90, 90), res = 0.00001)
+
+local_grid <- crop(huge_grid, extent(147, 147.01, -42, -41.99))
+
+coarse_grid <- raster(extent(huge_grid), res = 1)
+
+## now, build a map between local and coarse
+tib <- tibble(local_cell = cellFromXY(huge_grid, coordinates(local_grid)), 
+              coarse_cell = cellFromXY(coarse_grid, coordinates(local_grid)))
+              
+```
+
+This is great, I can perform extractions or bin intensity of local data at very high
+resolution on the local grid, without burning down the compute node, and then I can 
+group by the coarse grid cells and sum up the lower level details, and then map 
+those aggregates at global scale, in a consistent structure that I can use easily. 
+
+But, I have to have two rasters lying around, their cell numbers are inextricably tied
+to their extent, dimension and coordinate system, and even while local and huge are from the "same grid" they don't share cell numbers for the "same" cells. 
+
+Hence, vectors with embedded raster specifications. We'll see if it works!  See a similarish attempt from a rectlinear axis context (NetCDF-style).  https://github.com/hypertidy/discrete
+
+## Installation
+
+You can install gridcol from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("hypertidy/gridcol")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(gridcol)
+library(raster)
+(g <- gridcol(1:12, raster(matrix(1:12, 3), crs = "+proj=sinu +ellps=sphere +a=1 +b=1")))
+raster(g)
+
+xyFromCell(raster(g), 4:5)
+library(dplyr)
+library(tibble)
+(tib <- tibble(cell = 1:ncell(raster(g))) %>% inner_join(tibble(cell = g[6:9])))
+
+
+tibble(cell = g) %>% pull(cell) %>% raster()
+```
+
+(And, well, why not recursive vectors too? Grids are so much more than the affine shadows we get told about in GIS, ragged arrays are also under utilized in R, the L3bin structures for NASA ocean colour an obvious example.)
+
+
+# Code
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+
