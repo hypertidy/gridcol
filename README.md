@@ -116,7 +116,32 @@ tibble(cell = g) %>% pull(cell) %>% raster()
 
 (And, well, why not recursive vectors too? Grids are so much more than the affine shadows we get told about in GIS, ragged arrays are also under utilized in R, the L3bin structures for NASA ocean colour an obvious example.)
 
-Code
-====
+Everything is an experiment
+---------------------------
+
+``` r
+library(raadtools)
+r <- readice(latest = TRUE)
+p <- sp::spTransform(aceecostats::aes_region_simple, projection(r))
+library(dplyr)
+library(rlang)
+#> 
+#> Attaching package: 'rlang'
+#> The following object is masked from 'package:tibble':
+#> 
+#>     has_name
+gc_object_cell <- function(.data, object, cell, ..., add = FALSE) {
+  quo_cell <- enquo(cell)
+  rgrid <- raster::raster(dplyr::pull(.data, !!quo_cell))
+  dplyr::mutate(tabularaster::cellnumbers(rgrid, object), cell_ = gridcol(cell_, rgrid))
+}
+tab <- gc_object_cell(gc_tibble(r), p, cellindex)
+r[] <- NA
+r[unclass(tab$cell_)] <- tab$object_
+plot(r, col = sample(rainbow(nrow(p), alpha = 0.6)))
+plot(p, add = TRUE)
+```
+
+![](README-unnamed-chunk-2-1.png) \# Code
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
