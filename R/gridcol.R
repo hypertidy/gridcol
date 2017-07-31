@@ -79,6 +79,13 @@ gridcol.integer <- function(x, grid, ...) {
   if (any(x > prod(gs$nrow * gs$ncol))) warning("cell value greater than length of grid")
   structure(x, class = "gridcol", grid_spec = gs)
 }
+#' @name gridcol
+#' @export
+gridcol.RasterLayer <- function(x, grid, ...) {
+  if (!missing(grid)) warning("grid input (second argument) is ignored")
+  gs <- grid_spec(x)
+  gridcol(seq_len(ncell(x)), gs)
+}
 
 
 #' gridcol methods

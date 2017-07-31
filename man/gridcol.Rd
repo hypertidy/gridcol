@@ -7,6 +7,8 @@
 \alias{gridcol}
 \alias{gridcol.integer}
 \alias{gridcol}
+\alias{gridcol.RasterLayer}
+\alias{gridcol}
 \alias{gc_tibble}
 \alias{gridcol}
 \alias{gc_tibble.BasicRaster}
@@ -17,6 +19,8 @@ gridcol(x, grid, ...)
 \method{gridcol}{numeric}(x, grid, ...)
 
 \method{gridcol}{integer}(x, grid, ...)
+
+\method{gridcol}{RasterLayer}(x, grid, ...)
 
 gc_tibble(x, ...)
 
