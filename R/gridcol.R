@@ -107,7 +107,7 @@ x_coord.gridcol <- function(x, ...) {
 }
 #' @name x_coord
 #' @export
-y_coord <-function(x, ...) {UseMethod("x_coord")}
+y_coord <-function(x, ...) {UseMethod("y_coord")}
 #' @name x_coord
 #' @export
 y_coord.gridcol <- function(x, ...) {
