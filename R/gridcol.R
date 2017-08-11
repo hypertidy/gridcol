@@ -88,6 +88,36 @@ gridcol.RasterLayer <- function(x, grid, ...) {
 }
 
 
+#' X coordinate
+#'
+#' @param x gridcol
+#' @param ... arguments for methods
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x_coord(gridcol(1:10, raster(volcano)))
+#' y_coord(gridcol(1:10, raster(volcano)))
+x_coord <-function(x, ...) {UseMethod("x_coord")}
+#' @name x_coord
+#' @export
+x_coord.gridcol <- function(x, ...) {
+  raster::xFromCell(raster(x), x)
+}
+#' @name x_coord
+#' @export
+y_coord <-function(x, ...) {UseMethod("x_coord")}
+#' @name x_coord
+#' @export
+y_coord.gridcol <- function(x, ...) {
+  raster::yFromCell(raster(x), x)
+}
+
+
+
+
+
 #' gridcol methods
 #'
 #' @param x
