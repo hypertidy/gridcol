@@ -103,7 +103,7 @@ x_coord <-function(x, ...) {UseMethod("x_coord")}
 #' @name x_coord
 #' @export
 x_coord.gridcol <- function(x, ...) {
-  raster::xFromCell(raster(x), x)
+  raster::xFromCell(raster(x), as.integer(x))
 }
 #' @name x_coord
 #' @export
@@ -111,7 +111,7 @@ y_coord <-function(x, ...) {UseMethod("x_coord")}
 #' @name x_coord
 #' @export
 y_coord.gridcol <- function(x, ...) {
-  raster::yFromCell(raster(x), x)
+  raster::yFromCell(raster(x), as.integer(x))
 }
 
 
